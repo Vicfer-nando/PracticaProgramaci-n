@@ -1,6 +1,6 @@
 package Ejercicios;
 import java.util.Scanner;
-public class Pruebas {
+public class PracticaProgramacion {
     public static void main(String[] args) {
         Scanner entrada = new Scanner(System.in);
         int opcion;
