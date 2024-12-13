@@ -1,0 +1,370 @@
+package Ejercicios;
+import java.util.Scanner;
+public class PracticaProgramacion2 {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+        int opcion;
+
+        do {
+            System.out.println("\n--- Menú de Opciones ---");
+            System.out.println("1. Gestor de Ventas de Autos");
+            System.out.println("2. Llamadas Internacionales");
+            System.out.println("3. Tarifa de Agua");
+            System.out.println("4. Serie Numérica");
+            System.out.println("5. Salir");
+            System.out.print("Elija una opción: ");
+            opcion = entrada.nextInt();
+            entrada.nextLine(); // Limpiar buffer
+
+            switch (opcion) {
+                case 1:
+                    GestorVentasAutos.main(args);
+                    break;
+                case 2:
+                    LlamadasInternacionales.main(args);
+                    break;
+                case 3:
+                    TarifaAgua.main(args);
+                    break;
+                case 4:
+                    SerieNumerica.main(args);
+                    break;
+                case 5:
+                    System.out.println("Saliendo del sistema...");
+                    break;
+                default:
+                    System.out.println("Opción inválida. Intente nuevamente.");
+            }
+        } while (opcion != 5);
+
+        entrada.close();
+    }
+}
+class GestorVentasAutos {
+    private static final double SALARIO_BASE_MENSUAL = 2500.00;
+    private static final double COMISION_POR_AUTO = 250.00;
+    private static final double VALOR_MINIMO_AUTO_COMISION = 10000.00;
+    private static final double PORCENTAJE_UTILIDAD = 0.05;
+
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+        String nombreempleado;
+        int opcion;
+
+        do {
+            System.out.println("\n--- Sistema de Gestión de Ventas de Autos ---");
+            System.out.println("1. Registrar Ventas");
+            System.out.println("2. Salir");
+            System.out.print("Elija una opción: ");
+            opcion = entrada.nextInt();
+            entrada.nextLine(); // Limpiar buffer
+
+            switch (opcion) {
+                case 1:
+                    System.out.print("Ingrese el nombre del empleado: ");
+                    nombreempleado = entrada.nextLine();
+                    procesarVentas(nombreempleado);
+                    break;
+                case 2:
+                    System.out.println("Saliendo del sistema...");
+                    break;
+                default:
+                    System.out.println("Opción inválida. Intente nuevamente.");
+            }
+        } while (opcion != 2);
+
+        entrada.close();
+    }
+
+    private static void procesarVentas(String nombreEmpleado) {
+        Scanner entrada = new Scanner(System.in);
+        int totalAutosVendidos = 0;
+        int autosConComision = 0;
+        double valorTotalVentas = 0.0;
+
+        while (true) {
+            System.out.println("\n--- Registro de Ventas ---");
+            System.out.println("Ingrese el valor del automóvil");
+            System.out.println("Escriba 'FIN' para terminar el registro");
+            System.out.print("Valor: ");
+            
+            String entrada_usuario = entrada.nextLine();
+            
+            // Condición para finalizar
+            if (entrada_usuario.equalsIgnoreCase("FIN")) {
+                break;
+            }
+            
+            // Convertir entrada a valor numérico
+            double valorAuto;
+            try {
+                valorAuto = Double.parseDouble(entrada_usuario);
+            } catch (NumberFormatException e) {
+                System.out.println("Entrada inválida. Ingrese un número o 'FIN'.");
+                continue;
+            }
+
+            // Validaciones de valor
+            if (valorAuto <= 0) {
+                System.out.println("El valor del auto debe ser mayor a cero.");
+                continue;
+            }
+
+            totalAutosVendidos++;
+
+            if (valorAuto >= VALOR_MINIMO_AUTO_COMISION) {
+                autosConComision++;
+                valorTotalVentas += valorAuto;
+                System.out.println("Auto registrado con comisión");
+            } else {
+                System.out.println("Auto registrado sin comisión");
+            }
+        }
+
+        double comisionTotal = calcularComision(autosConComision);
+        double utilidadTotal = calcularUtilidad(valorTotalVentas);
+        double montoTotalPagar = calcularMontoTotal(comisionTotal, utilidadTotal);
+
+        generarInformeFinal(
+            nombreEmpleado, 
+            totalAutosVendidos, 
+            autosConComision, 
+            valorTotalVentas, 
+            comisionTotal, 
+            utilidadTotal, 
+            montoTotalPagar
+        );
+    }
+
+    private static double calcularComision(int autosConComision) {
+        return autosConComision * COMISION_POR_AUTO;
+    }
+
+    private static double calcularUtilidad(double valorTotalVentas) {
+        return valorTotalVentas * PORCENTAJE_UTILIDAD;
+    }
+
+    private static double calcularMontoTotal(double comisionTotal, double utilidadTotal) {
+        return SALARIO_BASE_MENSUAL + comisionTotal + utilidadTotal;
+    }
+
+    private static void generarInformeFinal(
+        String nombreEmpleado,
+        int totalAutosVendidos,
+        int autosConComision,
+        double valorTotalVentas,
+        double comisionTotal,
+        double utilidadTotal,
+        double montoTotalPagar
+    ) {
+        System.out.println("\n===== INFORME DE VENTAS =====");
+        System.out.println("Empleado: " + nombreEmpleado);
+        System.out.println("------------------------------");
+        System.out.println("Total Autos Vendidos: " + totalAutosVendidos);
+        System.out.println("Autos con Comisión: " + autosConComision);
+        System.out.printf("Valor Total de Ventas: $%.2f%n", valorTotalVentas);
+        System.out.println("\n--- Desglose Financiero ---");
+        System.out.printf("Salario Base: $%.2f%n", SALARIO_BASE_MENSUAL);
+        System.out.printf("Comisión por Ventas: $%.2f%n", comisionTotal);
+        System.out.printf("Utilidad Total (5%%): $%.2f%n", utilidadTotal);
+        System.out.println("------------------------------");
+        System.out.printf("Monto Total a Pagar: $%.2f%n", montoTotalPagar);
+        System.out.println("===========================");
+    }
+}
+
+class LlamadasInternacionales {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Ingrese la zona de destino: ");
+        String zonaInput = scanner.nextLine().toUpperCase().replace(" ", "_");
+        Zona zonaDestino = Zona.valueOf(zonaInput);
+
+        System.out.print("Ingrese la cantidad de minutos de la llamada: ");
+        int minutos = scanner.nextInt();
+
+        double costoTotal = calcularCostoLlamada(zonaDestino, minutos);
+
+        System.out.printf("El costo total de la llamada de %d minutos es de: $%.2f%n", minutos, costoTotal);
+
+        scanner.close();
+    }
+
+    private static double calcularCostoLlamada(Zona zona, int minutos) {
+        double precioPorMinuto = obtenerPrecioPorMinuto(zona);
+        return precioPorMinuto * minutos;
+    }
+
+    private static double obtenerPrecioPorMinuto(Zona zona) {
+        switch (zona) {
+            case AMERICA_DEL_NORTE:
+                return 2.75;
+            case AMERICA_CENTRAL:
+                return 1.89;
+            case AMERICA_DEL_SUR:
+                return 1.60;
+            case EUROPA:
+                return 3.50;
+            case ASIA:
+                return 4.50;
+            case AFRICA:
+                return 3.10;
+            case OCEANIA:
+                return 3.00;
+            case RESTO_DEL_MUNDO:
+                return 6.00;
+            default:
+                throw new IllegalArgumentException("Zona de destino no válida");
+        }
+    }
+
+    private enum Zona {
+        AMERICA_DEL_NORTE,
+        AMERICA_CENTRAL,
+        AMERICA_DEL_SUR,
+        EUROPA,
+        ASIA,
+        AFRICA,
+        OCEANIA,
+        RESTO_DEL_MUNDO
+    }
+}
+
+class TarifaAgua {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+        String continuar;
+
+        do {
+            System.out.print("Consumo mensual en m³: ");
+            double consumo = entrada.nextDouble();
+
+            System.out.print("¿Es una persona de la tercera edad? (s/n): ");
+            boolean terceraEdad = leerBooleano(entrada);
+
+            System.out.print("¿Tiene discapacidad? (s/n): ");
+            boolean discapacidad = leerBooleano(entrada);
+
+            double porcentajeDiscapacidad = 0;
+            if (discapacidad) {
+                System.out.print("Porcentaje de discapacidad (%): ");
+                porcentajeDiscapacidad = entrada.nextDouble();
+            }
+
+            Usuario usuario = new Usuario(consumo, terceraEdad, discapacidad, porcentajeDiscapacidad);
+            double precioInicial = calcularTarifa(usuario);
+            double descuento = calcularDescuento(usuario, precioInicial);
+
+            Factura factura = new Factura(precioInicial, descuento);
+            factura.mostrar();
+
+            System.out.print("\n¿Desea calcular otra tarifa? (s/n): ");
+            continuar = entrada.next();
+        } while (continuar.equalsIgnoreCase("s"));
+
+        System.out.println("¡Gracias por usar el sistema!");
+        entrada.close();
+    }
+
+    public static boolean leerBooleano(Scanner entrada) {
+        String respuesta;
+        do {
+            respuesta = entrada.next();
+            if (respuesta.equalsIgnoreCase("s")) return true;
+            if (respuesta.equalsIgnoreCase("n")) return false;
+            System.out.print("Respuesta inválida. Intente de nuevo (s/n): ");
+        } while (true);
+    }
+
+    public static double calcularTarifa(Usuario usuario) {
+        double precioPorMetroCubico = 1.2;
+        double tarifaBase = usuario.getConsumo() * precioPorMetroCubico;
+
+        if (usuario.isTerceraEdad() || usuario.isDiscapacidad()) {
+            tarifaBase -= tarifaBase * 0.10; // Descuento del 10%
+        }
+
+        return tarifaBase;
+    }
+
+    public static double calcularDescuento(Usuario usuario, double precioInicial) {
+        double descuento = 0;
+        if (usuario.isDiscapacidad()) {
+            descuento = precioInicial * (usuario.getPorcentajeDiscapacidad() / 100);
+        }
+        return descuento;
+    }
+}
+
+class Usuario {
+    private double consumo;
+    private boolean terceraEdad;
+    private boolean discapacidad;
+    private double porcentajeDiscapacidad;
+
+    public Usuario(double consumo, boolean terceraEdad, boolean discapacidad, double porcentajeDiscapacidad) {
+        this.consumo = consumo;
+        this.terceraEdad = terceraEdad;
+        this.discapacidad = discapacidad;
+        this.porcentajeDiscapacidad = porcentajeDiscapacidad;
+    }
+
+    public double getConsumo() {
+        return consumo;
+    }
+
+    public boolean isTerceraEdad() {
+        return terceraEdad;
+    }
+
+    public boolean isDiscapacidad() {
+        return discapacidad;
+    }
+
+    public double getPorcentajeDiscapacidad() {
+        return porcentajeDiscapacidad;
+    }
+}
+
+class Factura {
+    private double precioInicial;
+    private double descuento;
+
+    public Factura(double precioInicial, double descuento) {
+        this.precioInicial = precioInicial;
+        this.descuento = descuento;
+    }
+
+    public void mostrar() {
+        double total = precioInicial - descuento;
+        System.out.println("\n--- Detalles de la Factura ---");
+        System.out.printf("Precio inicial: $%.2f%n", precioInicial);
+        System.out.printf("Descuento: $%.2f%n", descuento);
+        System.out.printf("Total a pagar: $%.2f%n", total);
+        System.out.println("------------------------------");
+    }
+}
+
+class SerieNumerica {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+
+        System.out.print("Ingrese el número de términos de la serie: ");
+        int n = entrada.nextInt();
+
+        System.out.println("Serie numérica:");
+        generarSerie(n);
+
+        entrada.close();
+    }
+
+    public static void generarSerie(int n) {
+        int a = 1;
+        for (int i = 1; i <= n; i++) {
+            System.out.print(a + " ");
+            a += 2;  // Aumentamos de dos en dos
+        }
+        System.out.println();
+    }
+}
